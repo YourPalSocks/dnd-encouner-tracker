@@ -8,8 +8,12 @@ root = tk.Tk()
 root.geometry('500x350')
 root.resizable(False, False)
 root.title(f'D&D Encounter Tracker -- {VERSION}')
-ico = ImageTk.PhotoImage(Image.open('dnd.jpg'))
-root.wm_iconphoto(False, ico)
+
+# Menu
+mainmenu = tk.Menu(root)
+mainmenu.add_command(label='Open', command=None)
+mainmenu.add_command(label='Save', command=None)
+root.config(menu=mainmenu)
 
 # Character panel
 char_panel = tk.Frame(root, highlightbackground='black', highlightthickness=1, width=250)
@@ -25,7 +29,7 @@ add_char.pack(expand=True, fill='both')
 remove_char.pack(expand=True, fill='both')
 
 # Next Turn Button
-next_turn = tk.Button(root, width=20, text='Next Turn')
+next_turn = tk.Button(root, width=20, text='Next Turn', bg='light grey')
 next_turn.pack(side=tk.LEFT, expand=True, fill='both')
 
 # Combat Panels
@@ -39,3 +43,5 @@ combat_list.pack(expand=True, fill='both')
 
 # Main loop
 root.mainloop()
+
+## Button Functions to communicate to active_encounter

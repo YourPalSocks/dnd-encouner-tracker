@@ -1,2 +1,8 @@
 # IDE Files
 .vscode/
+__pycache__/
+
+# Build
+build/
+dist/
+*.exe*

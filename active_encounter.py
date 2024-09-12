@@ -17,7 +17,9 @@ class EncounterStorage:
     
     def add_character(self, char):
         self.characters.append(char)
-    
 
-def create_encounter_instance() -> EncounterStorage:
-    return EncounterStorage()
+    def add_combatant(self, char: str, init: int):
+        self.combatants.append({'Name': char, "Initiative": init})
+        # Sort combatants by initiative
+        self.combatants = sorted(self.combatants, key=lambda x:x['Initiative'], reverse=True)
+    

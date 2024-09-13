@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog, messagebox, filedialog
 
 import active_encounter as encounter
 
@@ -48,18 +48,19 @@ def add_to_combat(root: tk.Tk,
 
 def start_next_turn(root: tk.Tk,
                     enc_state: encounter.EncounterStorage):
-    lstbox: tk.Listbox = root.pack_slaves()[2].pack_slaves()[1]
-    next = enc_state.next_turn()
-    # Update combat box
-    lstbox.delete(0, tk.END)
-    idx = 0
-    # Re-build
-    for combat in enc_state.combatants:
-        lstbox.insert(idx, combat['Name'])
-        # Check if current
-        if combat['Name'] == next['Name']:
-            lstbox.itemconfig(idx, bg='yellow')
-        idx += 1
+    if len(enc_state.combatants) > 0:
+        lstbox: tk.Listbox = root.pack_slaves()[2].pack_slaves()[1]
+        next = enc_state.next_turn()
+        # Update combat box
+        lstbox.delete(0, tk.END)
+        idx = 0
+        # Re-build
+        for combat in enc_state.combatants:
+            lstbox.insert(idx, combat['Name'])
+            # Check if current
+            if combat['Name'] == next['Name']:
+                lstbox.itemconfig(idx, bg='yellow')
+            idx += 1
 
 def display_selected_init(root: tk.Tk,
                           selected_idx: int,
@@ -85,9 +86,28 @@ def clear_combat(root: tk.Tk,
         lstbox.delete(0, tk.END)
         enc_state.combatants = []
 
+def save_chars(root: tk.Tk,
+               enc_state: encounter.EncounterStorage):
+    pth = filedialog.asksaveasfilename(defaultextension='.enc', filetypes=[("encounter file", "*.enc")])
+    if pth != None:
+        enc_state.save_state(pth)
+
+def load_chars(root: tk.Tk,
+               enc_state: encounter.EncounterStorage):
+    pth = filedialog.askopenfilename(defaultextension='.enc', filetypes=[("encounter file", "*.enc")])
+    if pth != None:
+        enc_state.load_state(pth)
+        # Update list
+        lstbox: tk.Listbox = root.pack_slaves()[0].pack_slaves()[1]
+        lstbox.delete(0, tk.END)
+        idx = 0
+        for char in enc_state.characters:
+            lstbox.insert(idx, char)
+            idx += 1
+
 
 ## Window setup and mainloop
-VERSION = '0.1'
+VERSION = '1.1.0'
 # Window setup
 root = tk.Tk()
 root.geometry('500x350')
@@ -96,8 +116,8 @@ root.title(f'D&D Encounter Tracker -- {VERSION}')
 
 # Menu
 mainmenu = tk.Menu(root)
-mainmenu.add_command(label='Open', command=None)
-mainmenu.add_command(label='Save', command=None)
+mainmenu.add_command(label='Open', command=lambda: load_chars(root, enc_state))
+mainmenu.add_command(label='Save', command=lambda: save_chars(root, enc_state))
 clear_menu = tk.Menu(mainmenu, tearoff=0)
 clear_menu.add_command(label='All', command=lambda: clear_all(root, enc_state))
 clear_menu.add_command(label='Characters', command=lambda: clear_characters(root, enc_state))

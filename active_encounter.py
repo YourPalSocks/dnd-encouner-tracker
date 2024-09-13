@@ -1,5 +1,4 @@
-import tkinter as tk
-
+from tkinter import filedialog
 
 # Small class to store current encounter state
 class EncounterStorage:
@@ -22,4 +21,14 @@ class EncounterStorage:
         self.combatants.append({'Name': char, "Initiative": init})
         # Sort combatants by initiative
         self.combatants = sorted(self.combatants, key=lambda x:x['Initiative'], reverse=True)
+
+    def save_state(self, f: str):
+        # Prepare contents for saving. Save character list to file
+        sv =  ','.join(self.characters)
+        with open(f, mode='w') as file:
+            file.write(sv)
+    
+    def load_state(self, f: str):
+        with open(f, mode='r') as file:
+            self.characters = file.readline().split(',')
     

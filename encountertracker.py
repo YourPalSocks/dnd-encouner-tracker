@@ -17,6 +17,18 @@ def add_character(root: tk.Tk,
             lstbox.insert(idx, char)
             idx += 1
 
+def remove_character(root: tk.Tk,
+                     selected_idx: int,
+                     enc_state: encounter.EncounterStorage):
+    enc_state.characters.pop(selected_idx)
+    # Update listbox
+    lstbox: tk.Listbox = root.pack_slaves()[0].pack_slaves()[1]
+    lstbox.delete(0, tk.END)
+    idx = 0
+    for char in enc_state.characters:
+        lstbox.insert(idx, char)
+        idx += 1
+
 def add_to_combat(root: tk.Tk,
                   selected_idx: int,
                   enc_state: encounter.EncounterStorage):
@@ -101,7 +113,7 @@ char_lb = tk.Label(char_panel, text='Characters')
 char_list = tk.Listbox(char_panel, selectmode=tk.SINGLE, justify='center')
 char_list.bind('<Double-1>', func=lambda e: add_to_combat(root, char_list.curselection()[0], enc_state))
 add_char = tk.Button(char_panel, text='Add', command=lambda: add_character(root, enc_state))
-remove_char = tk.Button(char_panel, text='Remove')
+remove_char = tk.Button(char_panel, text='Remove', command=lambda: remove_character(root, char_list.curselection()[0], enc_state))
 # Packing
 char_panel.pack(side=tk.LEFT, expand=True, fill='both')
 char_lb.pack()

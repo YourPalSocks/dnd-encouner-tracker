@@ -22,6 +22,10 @@ class EncounterStorage:
         # Sort combatants by initiative
         self.combatants = sorted(self.combatants, key=lambda x:x['Initiative'], reverse=True)
 
+    def remove_combatant(self, idx: int):
+        self.combatants.pop(idx)
+        self.combatants = sorted(self.combatants, key=lambda x:x['Initiative'], reverse=True)
+
     def save_state(self, f: str):
         # Prepare contents for saving. Save character list to file
         sv =  ','.join(self.characters)

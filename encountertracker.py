@@ -46,6 +46,20 @@ def add_to_combat(root: tk.Tk,
             # Highlight top combatant
             lstbox.itemconfig(0, bg='yellow')
 
+def remove_from_combat(root: tk.Tk,
+                       selected_idx: int,
+                       enc_state: encounter.EncounterStorage):
+    enc_state.remove_combatant(selected_idx)
+    # Update combat box
+    lstbox: tk.Listbox = root.pack_slaves()[2].pack_slaves()[1]
+    lstbox.delete(0, tk.END)
+    idx = 0
+    for combat in enc_state.combatants:
+        lstbox.insert(idx, combat['Name'])
+        idx += 1
+        # Highlight top combatant
+        lstbox.itemconfig(0, bg='yellow')
+
 def start_next_turn(root: tk.Tk,
                     enc_state: encounter.EncounterStorage):
     if len(enc_state.combatants) > 0:
@@ -107,7 +121,7 @@ def load_chars(root: tk.Tk,
 
 
 ## Window setup and mainloop
-VERSION = '1.1.0'
+VERSION = '1.1.1'
 # Window setup
 root = tk.Tk()
 root.geometry('500x350')
@@ -130,7 +144,7 @@ enc_state = encounter.EncounterStorage()
 # Character panel
 char_panel = tk.Frame(root, highlightbackground='black', highlightthickness=1, width=250)
 char_lb = tk.Label(char_panel, text='Characters')
-char_list = tk.Listbox(char_panel, selectmode=tk.SINGLE, justify='center')
+char_list = tk.Listbox(char_panel, selectmode=tk.SINGLE, justify='center', height=15)
 char_list.bind('<Double-1>', func=lambda e: add_to_combat(root, char_list.curselection()[0], enc_state))
 add_char = tk.Button(char_panel, text='Add', command=lambda: add_character(root, enc_state))
 remove_char = tk.Button(char_panel, text='Remove', command=lambda: remove_character(root, char_list.curselection()[0], enc_state))
@@ -149,12 +163,14 @@ next_turn.pack(side=tk.LEFT, expand=True, fill='both')
 # Combat Panels
 combat_panel = tk.Frame(root, highlightbackground='black', highlightthickness=1, width=250)
 combat_lb = tk.Label(combat_panel, text='Combat')
-combat_list = tk.Listbox(combat_panel, selectmode=tk.NONE, justify='center')
+combat_list = tk.Listbox(combat_panel, selectmode=tk.NONE, justify='center', height=17)
 combat_list.bind('<Double-1>', func=lambda e: display_selected_init(root, combat_list.curselection()[0], enc_state))
+remove_comb = tk.Button(combat_panel, text='Remove', height=0, command=lambda: remove_from_combat(root, combat_list.curselection()[0], enc_state))
 # Packing
 combat_panel.pack(side=tk.LEFT, expand=True, fill='both')
 combat_lb.pack()
 combat_list.pack(expand=True, fill='both')
+remove_comb.pack(expand=True, fill='both')
 
 # Main loop
 root.mainloop()
